@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematik O'yin</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .game-modes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            background: rgba(255,255,255,0.25);
+            border: none;
+            padding: 30px 20px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .mode-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.35);
+        }
+
+        .mode-btn:active {
+            transform: scale(0.98);
+        }
+
+        .game-screen {
+            display: none;
+            animation: slideIn 0.5s;
+        }
+
+        .question-card {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .question {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #667eea;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .answer-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .answer-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .answer-btn:active {
+            transform: scale(0.95);
+        }
+
+        .answer-btn.correct {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            animation: pulse 0.3s;
+        }
+
+        .answer-btn.wrong {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+            animation: shake 0.3s;
+        }
+
+        .timer {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .result-screen {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .result-card {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-score {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .result-details {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .combo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: comboAnim 0.5s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes comboAnim {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menu Screen -->
+        <div id="menuScreen" class="menu-screen">
+            <div class="header">
+                <h1>🧮 MATEMATIK O'YIN</h1>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="currentScore">0</div>
+                    <div class="stat-label">Ball</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="currentStreak">0</div>
+                    <div class="stat-label">Ketma-ket</div>
+                </div>
+            </div>
+
+            <div class="game-modes">
+                <button class="mode-btn" onclick="startGame('easy')">
+                    😊<br>OSON<br><small>1-10</small>
+                </button>
+                <button class="mode-btn" onclick="startGame('medium')">
+                    🤔<br>O'RTA<br><small>1-20</small>
+                </button>
+                <button class="mode-btn" onclick="startGame('hard')">
+                    😤<br>QIYIN<br><small>1-100</small>
+                </button>
+                <button class="mode-btn" onclick="startGame('mixed')">
+                    🔥<br>ARALASH<br><small>Hammasi</small>
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="game-screen">
+            <div class="timer" id="timer">60</div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="gameScore">0</div>
+                    <div class="stat-label">Ball</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">Combo</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="correct">0</div>
+                    <div class="stat-label">✅</div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question" id="question">5 + 3 = ?</div>
+                <div class="answers" id="answers"></div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="result-screen">
+            <div class="result-card">
+                <h2>🎉 O'yin Tugadi!</h2>
+                <div class="result-score" id="finalScore">0</div>
+                
+                <div class="result-details">
+                    <div>
+                        <div style="font-size: 2em;">✅</div>
+                        <div id="finalCorrect">0</div>
+                        <div>To'g'ri</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2em;">❌</div>
+                        <div id="finalWrong">0</div>
+                        <div>Noto'g'ri</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2em;">🎯</div>
+                        <div id="finalAccuracy">0%</div>
+                        <div>Aniqlik</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="back-btn" onclick="backToMenu()">🏠 Menyu</button>
+        </div>
+    </div>
+
+    <script>
+        // Telegram Web App obyektini tekshirish
+        let tg = window.Telegram?.WebApp;
+        
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        } else {
+            console.warn('Telegram Web App not available - running in browser mode');
+            // Browser rejimida test qilish uchun mock obyekt
+            tg = {
+                sendData: function(data) {
+                    console.log('Game result:', data);
+                    alert('O\'yin tugadi! Natija: ' + JSON.parse(data).score + ' ball');
+                },
+                themeParams: {},
+                ready: function() {},
+                expand: function() {}
+            };
+        }
+
+        let gameState = {
+            score: 0,
+            correct: 0,
+            wrong: 0,
+            streak: 0,
+            timeLeft: 60,
+            currentAnswer: 0,
+            mode: 'easy',
+            timer: null
+        };
+
+        const operations = ['+', '-', '×', '÷'];
+
+        function generateQuestion(mode) {
+            let num1, num2, op, answer;
+            
+            const ranges = {
+                easy: 10,
+                medium: 20,
+                hard: 100,
+                mixed: 50
+            };
+            
+            const maxNum = ranges[mode];
+            
+            if (mode === 'easy') {
+                op = Math.random() < 0.5 ? '+' : '-';
+                num1 = Math.floor(Math.random() * maxNum) + 1;
+                num2 = Math.floor(Math.random() * maxNum) + 1;
+            } else if (mode === 'medium') {
+                op = operations[Math.floor(Math.random() * 3)];
+                num1 = Math.floor(Math.random() * maxNum) + 1;
+                num2 = Math.floor(Math.random() * maxNum) + 1;
+            } else {
+                op = operations[Math.floor(Math.random() * 4)];
+                num1 = Math.floor(Math.random() * maxNum) + 1;
+                num2 = Math.floor(Math.random() * maxNum) + 1;
+            }
+
+            // Manfiy natijalarni oldini olish
+            if (op === '-' && num2 > num1) {
+                [num1, num2] = [num2, num1];
+            }
+
+            // Bo'lish uchun to'g'ri bo'linuvchi tanlash
+            if (op === '÷') {
+                num1 = num2 * (Math.floor(Math.random() * 10) + 1);
+            }
+
+            switch(op) {
+                case '+': answer = num1 + num2; break;
+                case '-': answer = num1 - num2; break;
+                case '×': answer = num1 * num2; break;
+                case '÷': answer = num1 / num2; break;
+            }
+
+            return {
+                question: `${num1} ${op} ${num2} = ?`,
+                answer: answer
+            };
+        }
+
+        function generateAnswers(correctAnswer) {
+            const answers = [correctAnswer];
+            
+            while (answers.length < 4) {
+                const offset = Math.floor(Math.random() * 20) - 10;
+                const wrongAnswer = correctAnswer + offset;
+                if (wrongAnswer > 0 && !answers.includes(wrongAnswer)) {
+                    answers.push(wrongAnswer);
+                }
+            }
+            
+            return answers.sort(() => Math.random() - 0.5);
+        }
+
+        function showQuestion() {
+            const q = generateQuestion(gameState.mode);
+            gameState.currentAnswer = q.answer;
+            
+            document.getElementById('question').textContent = q.question;
+            
+            const answers = generateAnswers(q.answer);
+            const answersDiv = document.getElementById('answers');
+            answersDiv.innerHTML = '';
+            
+            answers.forEach(ans => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = ans;
+                btn.onclick = () => checkAnswer(ans, btn);
+                answersDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, btn) {
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            if (selected === gameState.currentAnswer) {
+                btn.classList.add('correct');
+                gameState.correct++;
+                gameState.streak++;
+                
+                let points = 10;
+                if (gameState.streak >= 5) points += 5;
+                if (gameState.timeLeft > 50) points += 5;
+                
+                gameState.score += points;
+                
+                if (gameState.streak >= 5) {
+                    showCombo(gameState.streak);
+                }
+                
+                updateStats();
+                
+                setTimeout(() => {
+                    btn.classList.remove('correct');
+                    showQuestion();
+                }, 500);
+            } else {
+                btn.classList.add('wrong');
+                gameState.wrong++;
+                gameState.streak = 0;
+                gameState.score = Math.max(0, gameState.score - 5);
+                
+                updateStats();
+                
+                buttons.forEach(b => {
+                    if (parseInt(b.textContent) === gameState.currentAnswer) {
+                        b.classList.add('correct');
+                    }
+                });
+                
+                setTimeout(() => {
+                    btn.classList.remove('wrong');
+                    buttons.forEach(b => b.classList.remove('correct'));
+                    showQuestion();
+                }, 1000);
+            }
+        }
+
+        function showCombo(streak) {
+            const combo = document.createElement('div');
+            combo.className = 'combo';
+            combo.textContent = `${streak}x COMBO! 🔥`;
+            document.body.appendChild(combo);
+            
+            setTimeout(() => combo.remove(), 500);
+        }
+
+        function updateStats() {
+            document.getElementById('gameScore').textContent = gameState.score;
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('correct').textContent = gameState.correct;
+        }
+
+        function startTimer() {
+            gameState.timer = setInterval(() => {
+                gameState.timeLeft--;
+                document.getElementById('timer').textContent = gameState.timeLeft;
+                
+                if (gameState.timeLeft <= 10) {
+                    document.getElementById('timer').style.color = '#ff4444';
+                }
+                
+                if (gameState.timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function startGame(mode) {
+            gameState = {
+                score: 0,
+                correct: 0,
+                wrong: 0,
+                streak: 0,
+                timeLeft: 60,
+                mode: mode,
+                timer: null
+            };
+            
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('timer').style.color = 'white';
+            
+            updateStats();
+            showQuestion();
+            startTimer();
+        }
+
+        function endGame() {
+            clearInterval(gameState.timer);
+            
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('finalCorrect').textContent = gameState.correct;
+            document.getElementById('finalWrong').textContent = gameState.wrong;
+            
+            const total = gameState.correct + gameState.wrong;
+            const accuracy = total > 0 ? (gameState.correct / total * 100).toFixed(1) : 0;
+            document.getElementById('finalAccuracy').textContent = accuracy + '%';
+            
+            // URL dan game_id ni olish (agar guruh o'yini bo'lsa)
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameId = urlParams.get('game');
+            
+            // Telegramga natijani yuborish
+            const resultData = {
+                score: gameState.score,
+                correct: gameState.correct,
+                wrong: gameState.wrong,
+                mode: gameState.mode
+            };
+            
+            // Agar guruh o'yini bo'lsa, game_id qo'shish
+            if (gameId) {
+                resultData.game_id = gameId;
+            }
+            
+            tg.sendData(JSON.stringify(resultData));
+        }
+
+        function backToMenu() {
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('menuScreen').style.display = 'block';
+            
+            document.getElementById('currentScore').textContent = gameState.score;
+        }
+
+        // Telegram tema ranglarini qo'llash
+        if (tg && tg.themeParams && tg.themeParams.bg_color) {
+            document.body.style.background = `linear-gradient(135deg, ${tg.themeParams.bg_color}, ${tg.themeParams.secondary_bg_color || '#764ba2'})`;
+        }
+    </script>
+</body>
+</html>
