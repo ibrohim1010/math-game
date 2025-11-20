@@ -201,6 +201,27 @@
             transition: all 0.3s;
         }
 
+        /* GURUH BONUS NOTIFICATION */
+        .group-bonus-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            z-index: 9999;
+            animation: slideDown 0.5s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .group-bonus-notification.hide {
+            animation: slideUp 0.5s ease forwards;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -209,6 +230,28 @@
         @keyframes slideIn {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-50%) translateY(-100px);
+                opacity: 0;
+            }
         }
 
         @keyframes pulse {
@@ -333,7 +376,9 @@
     </div>
 
     <script>
-        // Telegram Web App obyektini tekshirish
+        // ========================================
+        // TELEGRAM WEB APP INTEGRATSIYA
+        // ========================================
         let tg = window.Telegram?.WebApp;
         
         if (tg) {
@@ -341,18 +386,64 @@
             tg.expand();
         } else {
             console.warn('Telegram Web App not available - running in browser mode');
-            // Browser rejimida test qilish uchun mock obyekt
             tg = {
                 sendData: function(data) {
                     console.log('Game result:', data);
                     alert('O\'yin tugadi! Natija: ' + JSON.parse(data).score + ' ball');
                 },
+                initDataUnsafe: {},
                 themeParams: {},
                 ready: function() {},
                 expand: function() {}
             };
         }
 
+        // ========================================
+        // GURUH BONUS TIZIMI
+        // ========================================
+        function getGameInfo() {
+            const initData = tg.initDataUnsafe || {};
+            
+            return {
+                isFromGroup: initData.chat_type === 'group' || initData.chat_type === 'supergroup',
+                chatId: initData.chat?.id || null,
+                chatTitle: initData.chat?.title || null,
+                userId: initData.user?.id || null,
+                username: initData.user?.username || "Unknown",
+                firstName: initData.user?.first_name || "User"
+            };
+        }
+
+        function showGroupBonusNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'group-bonus-notification';
+            notification.innerHTML = `
+                <div style="font-size: 24px; margin-bottom: 5px;">🎁</div>
+                <div style="font-weight: bold; font-size: 16px;">GURUH BONUSI!</div>
+                <div style="font-size: 13px; opacity: 0.9; margin-top: 5px;">
+                    O'yinni tugatgach +100 ball oling!
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('hide');
+                setTimeout(() => notification.remove(), 500);
+            }, 5000);
+        }
+
+        // O'yin yuklanganda guruh bonusini tekshirish
+        const gameInfo = getGameInfo();
+        console.log('Game Info:', gameInfo);
+
+        if (gameInfo.isFromGroup) {
+            setTimeout(() => showGroupBonusNotification(), 500);
+        }
+
+        // ========================================
+        // O'YIN LOGIKASI
+        // ========================================
         let gameState = {
             score: 0,
             correct: 0,
@@ -392,12 +483,10 @@
                 num2 = Math.floor(Math.random() * maxNum) + 1;
             }
 
-            // Manfiy natijalarni oldini olish
             if (op === '-' && num2 > num1) {
                 [num1, num2] = [num2, num1];
             }
 
-            // Bo'lish uchun to'g'ri bo'linuvchi tanlash
             if (op === '÷') {
                 num1 = num2 * (Math.floor(Math.random() * 10) + 1);
             }
@@ -559,23 +648,20 @@
             const accuracy = total > 0 ? (gameState.correct / total * 100).toFixed(1) : 0;
             document.getElementById('finalAccuracy').textContent = accuracy + '%';
             
-            // URL dan game_id ni olish (agar guruh o'yini bo'lsa)
-            const urlParams = new URLSearchParams(window.location.search);
-            const gameId = urlParams.get('game');
-            
-            // Telegramga natijani yuborish
+            // ========================================
+            // TELEGRAM GA NATIJA YUBORISH
+            // ========================================
             const resultData = {
                 score: gameState.score,
                 correct: gameState.correct,
                 wrong: gameState.wrong,
-                mode: gameState.mode
+                mode: gameState.mode,
+                from_group: gameInfo.isFromGroup,
+                chat_id: gameInfo.chatId,
+                chat_title: gameInfo.chatTitle
             };
             
-            // Agar guruh o'yini bo'lsa, game_id qo'shish
-            if (gameId) {
-                resultData.game_id = gameId;
-            }
-            
+            console.log('Sending result:', resultData);
             tg.sendData(JSON.stringify(resultData));
         }
 
@@ -593,4 +679,3 @@
     </script>
 </body>
 </html>
-
