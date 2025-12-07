@@ -220,31 +220,8 @@
         .name-input{width:100%;padding:14px;background:var(--bg-card);border:2px solid var(--border-color);border-radius:12px;color:var(--text-primary);font-size:1rem;font-family:inherit;margin-bottom:16px}
         .name-input:focus{outline:none;border-color:rgba(139,92,246,0.5)}
         .save-btn{width:100%;padding:14px;background:linear-gradient(135deg,#8b5cf6,#6366f1);border:none;border-radius:14px;color:#fff;font-weight:800;cursor:pointer}
-        .payment-info{background:var(--bg-card);border-radius:12px;padding:14px;margin-bottom:14px}
-        .payment-info .lbl{font-size:0.75rem;color:var(--text-muted)}
-        .payment-info .val{font-weight:700;font-size:1.05rem}
         .card-num{background:rgba(0,0,0,0.3);padding:14px;border-radius:10px;font-family:monospace;font-size:1.1rem;text-align:center;margin-bottom:14px;cursor:pointer;border:1px dashed rgba(255,255,255,0.3)}
         [data-theme="light"] .card-num{background:#f1f5f9;border:1px dashed rgba(0,0,0,0.2)}
-        .upload-area{border:2px dashed var(--border-color);border-radius:12px;padding:24px;text-align:center;cursor:pointer;margin-bottom:14px}
-        .upload-area:hover{border-color:rgba(99,102,241,0.5)}
-        .upload-area.has-file{border-color:#10b981;background:rgba(16,185,129,0.1)}
-        .upload-area .icon{font-size:2rem;margin-bottom:6px}
-        .upload-area .text{font-size:0.85rem;color:var(--text-muted)}
-        .submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:14px;color:#fff;font-weight:800;cursor:pointer}
-        .submit-btn:disabled{opacity:0.5;cursor:not-allowed}
-        .admin-requests{display:flex;flex-direction:column;gap:12px}
-        .admin-request{background:var(--bg-card);border:1px solid var(--border-color);border-radius:14px;padding:14px}
-        .admin-request .user-info{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-        .admin-request .avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-        .admin-request .details{flex:1}
-        .admin-request .name{font-weight:700}
-        .admin-request .product{font-size:0.8rem;color:var(--text-muted)}
-        .admin-request .amount{font-weight:800;color:#10b981}
-        .admin-request .screenshot{width:100%;border-radius:8px;margin-bottom:10px;max-height:200px;object-fit:cover;cursor:pointer}
-        .admin-request .btns{display:flex;gap:8px}
-        .admin-request .btn{flex:1;padding:10px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
-        .admin-request .btn.approve{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
-        .admin-request .btn.reject{background:rgba(239,68,68,0.2);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}
         .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,41,59,0.95);border:1px solid rgba(255,255,255,0.1);padding:12px 20px;border-radius:12px;font-weight:600;font-size:0.9rem;opacity:0;transition:all 0.3s;z-index:3000}
         .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
         .toast.success{border-color:rgba(16,185,129,0.5);background:rgba(16,185,129,0.2)}
@@ -278,20 +255,15 @@
                 <div class="stat-box"><div class="value" id="accuracy">0%</div><div class="label">Aniqlik</div></div>
             </div>
             <div class="rank-progress" id="rankProgress">
-                <div class="rank-progress-header"><span id="nextRankName">Silver gacha</span><span id="progressText">0 / 5,000</span></div>
+                <div class="rank-progress-header"><span id="nextRankName">Silver gacha</span><span id="progressText">0 / 10,000</span></div>
                 <div class="rank-progress-bar"><div class="rank-progress-fill silver" id="progressFill" style="width:0%"></div></div>
             </div>
         </div>
-        <div class="premium-banner" id="premiumBanner" onclick="openModal('premium')">
+        <div class="premium-banner" id="premiumBanner" onclick="buyPremium()">
             <div class="title">⭐ Premium Obuna</div>
             <div class="desc">Maxsus imkoniyatlar va avatarlar!</div>
             <div class="price">5,000 so'm</div>
-            <div class="features"><div class="feature">✨ 2x Ball</div><div class="feature">🎨 Maxsus avatarlar</div><div class="feature">❤️ 5 jon</div></div>
-        </div>
-        <div class="pending-notice" id="pendingNotice" style="display:none">
-            <div class="icon">⏳</div>
-            <div class="title">So'rov yuborildi</div>
-            <div class="desc">Admin tekshirmoqda. Iltimos kuting...</div>
+            <div class="features"><div>✨ 2x Ball</div><div>🎨 Maxsus avatarlar</div><div>❤️ 5 jon</div></div>
         </div>
         <div class="play-section">
             <button class="play-btn" onclick="startGame()"><span class="icon">🎮</span><span>O'YNASH</span></button>
@@ -315,7 +287,7 @@
             <div class="lb-tab" onclick="switchLbTab('gold',this)">🥇 Gold</div>
             <div class="lb-tab" onclick="switchLbTab('pro',this)">💎 Pro</div>
         </div>
-        <div class="my-rank-card">
+        <div class="my-rank-card" id="myRankCard" style="display:none">
             <div class="left">
                 <div class="position">#<span id="myPosition">-</span></div>
                 <div class="avatar bronze" id="lbMyAvatar">🦊</div>
@@ -331,7 +303,7 @@
             <div class="title">Do'stlaringizni taklif qiling!</div>
             <div class="desc">Har bir taklif uchun ball oling</div>
             <div class="ref-bonuses"><div class="ref-bonus"><div class="val" id="refBonus">+50</div><div class="lbl">Har bir taklif</div></div><div class="ref-bonus"><div class="val">5%</div><div class="lbl">Ularning balidan</div></div></div>
-            <div class="ref-link-box"><input type="text" class="ref-link" id="refLink" value="t.me/yourbot?start=ref123" readonly><button class="copy-btn" onclick="copyRefLink()">📋</button></div>
+            <div class="ref-link-box"><input type="text" class="ref-link" id="refLink" readonly><button class="copy-btn" onclick="copyRefLink()">📋</button></div>
             <div class="ref-stats"><div class="ref-stat"><div class="val" id="totalRefs">0</div><div class="lbl">Taklif qilingan</div></div><div class="ref-stat"><div class="val" id="refEarnings">0</div><div class="lbl">Ishlab olgan</div></div></div>
         </div>
     </div>
@@ -403,7 +375,6 @@
                 <div class="setting-item"><div class="setting-info"><div class="setting-icon">🔊</div><div class="setting-text"><div class="title">Ovoz</div><div class="desc">O'yin ovozlari</div></div></div><div class="toggle active" id="soundToggle" onclick="toggleSetting('sound')"></div></div>
                 <div class="setting-item"><div class="setting-info"><div class="setting-icon">📳</div><div class="setting-text"><div class="title">Tebranish</div><div class="desc">Telefon tebranishi</div></div></div><div class="toggle" id="vibrationToggle" onclick="toggleSetting('vibration')"></div></div>
                 <div class="setting-item"><div class="setting-info"><div class="setting-icon">🌙</div><div class="setting-text"><div class="title">Tungi rejim</div><div class="desc">Qorong'u interfeys</div></div></div><div class="toggle active" id="darkToggle" onclick="toggleTheme()"></div></div>
-                <div class="setting-item" onclick="openModal('admin')" style="cursor:pointer"><div class="setting-info"><div class="setting-icon">👑</div><div class="setting-text"><div class="title">Admin Panel</div><div class="desc">To'lov so'rovlarini boshqarish</div></div></div><span style="opacity:0.5">→</span></div>
             </div>
         </div>
     </div>
@@ -419,108 +390,481 @@
             </div>
         </div>
     </div>
-    <div class="modal-overlay" id="premiumModal">
-        <div class="modal">
-            <div class="modal-header"><div class="modal-title">⭐ Premium Obuna</div><button class="modal-close" onclick="closeModal('premium')">✕</button></div>
-            <div class="modal-body">
-                <div style="text-align:center;margin-bottom:16px">
-                    <div style="font-size:3rem;margin-bottom:8px">👑</div>
-                    <div style="font-size:1.2rem;font-weight:900;margin-bottom:4px">Premium Imkoniyatlar</div>
-                    <div style="font-size:2rem;font-weight:900;color:#ffd700">5,000 so'm</div>
-                </div>
-                <div style="background:var(--bg-card);border-radius:12px;padding:14px;margin-bottom:14px">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:1.3rem">✨</span><div><div style="font-weight:700">2x Ball</div><div style="font-size:0.75rem;color:var(--text-muted)">Ikki baravar ball</div></div></div>
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:1.3rem">🎨</span><div><div style="font-weight:700">Maxsus Avatarlar</div><div style="font-size:0.75rem;color:var(--text-muted)">15+ premium avatarlar</div></div></div>
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:1.3rem">❤️</span><div><div style="font-weight:700">5 Jon</div><div style="font-size:0.75rem;color:var(--text-muted)">3 o'rniga 5 jon</div></div></div>
-                    <div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.3rem">🏆</span><div><div style="font-weight:700">Premium Badge</div><div style="font-size:0.75rem;color:var(--text-muted)">Maxsus belgi</div></div></div>
-                </div>
-                <button class="submit-btn" onclick="buyPremium()" style="background:linear-gradient(135deg,#ffd700,#ff6b6b,#c56cf0)">👑 Premium Sotib Olish</button>
-            </div>
-        </div>
-    </div>
-    <div class="modal-overlay" id="paymentModal">
-        <div class="modal">
-            <div class="modal-header"><div class="modal-title">💳 To'lov</div><button class="modal-close" onclick="closeModal('payment')">✕</button></div>
-            <div class="modal-body">
-                <div class="payment-info"><div class="lbl">To'lov summasi</div><div class="val" id="payAmount">0 so'm</div></div>
-                <div class="payment-info"><div class="lbl">Mahsulot</div><div class="val" id="payProduct">-</div></div>
-                <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px">Karta raqami (bosib nusxa oling)</div>
-                <div class="card-num" onclick="copyCard()">9860 0801 5954 3810</div>
-                <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px">To'lov chekini kiriting</div>
-                <div class="upload-area" id="uploadArea" onclick="document.getElementById('receiptInput').click()">
-                    <div class="icon">📷</div>
-                    <div class="text" id="uploadText">To'lov chekini kiriting</div>
-                    <input type="file" id="receiptInput" accept="image/*" style="display:none" onchange="handleUpload(event)">
-                </div>
-                <button class="submit-btn" id="submitBtn" onclick="submitPayment()" disabled>📤 Adminga jo'natish</button>
-            </div>
-        </div>
-    </div>
-    <div class="modal-overlay" id="adminModal">
-        <div class="modal">
-            <div class="modal-header"><div class="modal-title">👑 Admin Panel</div><button class="modal-close" onclick="closeModal('admin')">✕</button></div>
-            <div class="modal-body"><div class="section-title">📋 To'lov So'rovlari</div><div class="admin-requests" id="adminRequests"></div></div>
-        </div>
-    </div>
-    <div class="modal-overlay" id="imageModal" onclick="closeModal('image')"><img id="previewImage" style="max-width:90%;max-height:80%;border-radius:12px"></div>
     <div class="toast" id="toast"></div>
 <script>
-let tg=window.Telegram?.WebApp;if(tg){tg.ready();tg.expand()}
-const RANKS={bronze:{name:'Bronze',icon:'🥉',min:0,max:5000,mult:1,refBonus:50,price:0,priceText:'Bepul'},silver:{name:'Silver',icon:'🥈',min:5000,max:10000,mult:1.2,refBonus:75,price:3000,priceText:"3,000 so'm"},gold:{name:'Gold',icon:'🥇',min:10000,max:15000,mult:1.5,refBonus:100,price:5000,priceText:"5,000 so'm"},pro:{name:'Pro',icon:'💎',min:15000,max:999999,mult:2,refBonus:150,price:10000,priceText:"10,000 so'm"}};
+const tg=window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand()}
+
+const RANKS={
+    bronze:{name:'Bronze',icon:'🥉',min:0,max:10000,mult:1,refBonus:50,price:0},
+    silver:{name:'Silver',icon:'🥈',min:10000,max:20000,mult:1.2,refBonus:75,price:3000},
+    gold:{name:'Gold',icon:'🥇',min:20000,max:30000,mult:1.5,refBonus:100,price:5000},
+    pro:{name:'Pro',icon:'💎',min:30000,max:999999,mult:2,refBonus:150,price:10000}
+};
 const RANK_ORDER=['bronze','silver','gold','pro'];
 const AVATARS=['🦊','🐼','🦁','🐯','🐻','🐨','🐰','🐸','🦄','🐲'];
 const PREMIUM_AVATARS=['👨‍💻','👩‍💻','👨‍🎓','👩‍🎓','👨‍🔬','👩‍🔬','🧑‍🚀','👨‍✈️','👩‍⚕️','🧙‍♂️','🦸‍♂️','🦸‍♀️','🧝‍♂️','🧝‍♀️','🥷'];
-let user={id:'user_'+Math.random().toString(36).substr(2,9),name:"O'yinchi",avatar:'🦊',rank:'bronze',totalScore:0,gamesPlayed:0,correct:0,wrong:0,streak:0,lastDate:null,lives:3,extraTime:0,referrals:[],refEarnings:0,tasks:{refs:0,games:0,bought:false},isPremium:false,pendingRequest:null};
+
+let user={
+    id:tg?.initDataUnsafe?.user?.id||'user_'+Math.random().toString(36).substr(2,9),
+    name:tg?.initDataUnsafe?.user?.first_name||"O'yinchi",
+    avatar:'🦊',
+    rank:'bronze',
+    totalScore:0,
+    gamesPlayed:0,
+    correct:0,
+    wrong:0,
+    streak:0,
+    lives:3,
+    extraTime:0,
+    referrals:[],
+    refEarnings:0,
+    tasks:{refs:0,games:0,bought:false},
+    isPremium:false
+};
+
 let settings={sound:true,vibration:false,darkMode:true};
-let game={},pendingPay=null,selAvatar='🦊',currentLbTab='all',paymentRequests=[],uploadedFile=null;
-let leaderboardData=[{id:'1',name:'Aziz',avatar:'👨‍💻',rank:'pro',score:18000,isPremium:true},{id:'2',name:'Malika',avatar:'👩‍🎓',rank:'gold',score:14000,isPremium:true},{id:'3',name:'Bobur',avatar:'🦁',rank:'gold',score:12000},{id:'4',name:'Nilufar',avatar:'🦄',rank:'silver',score:8000},{id:'5',name:'Sardor',avatar:'🐯',rank:'silver',score:6500},{id:'6',name:'Gulnora',avatar:'🐼',rank:'bronze',score:4000},{id:'7',name:'Jamshid',avatar:'🐻',rank:'bronze',score:2500},{id:'8',name:'Madina',avatar:'🐰',rank:'bronze',score:1500}];
-let audioCtx=null;
-function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx}
-function playNote(ctx,freq,vol,delay,duration,type='sine'){const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=type;osc.frequency.setValueAtTime(freq,ctx.currentTime+delay);gain.gain.setValueAtTime(0,ctx.currentTime+delay);gain.gain.linearRampToValueAtTime(vol,ctx.currentTime+delay+0.01);gain.gain.linearRampToValueAtTime(0,ctx.currentTime+delay+duration);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime+delay);osc.stop(ctx.currentTime+delay+duration+0.1)}
-function playSound(type){if(!settings.sound)return;try{const ctx=initAudio();if(ctx.state==='suspended')ctx.resume();if(type==='correct'){playNote(ctx,523,0.1,0,0.15);playNote(ctx,659,0.1,0.1,0.15);playNote(ctx,784,0.15,0.2,0.2)}else if(type==='wrong'){playNote(ctx,311,0.2,0,0.2,'sawtooth');playNote(ctx,233,0.2,0.1,0.25,'sawtooth')}else if(type==='tick'){playNote(ctx,800,0.05,0,0.05)}else if(type==='levelup'){playNote(ctx,523,0.1,0,0.15);playNote(ctx,659,0.1,0.15,0.15);playNote(ctx,784,0.1,0.3,0.15);playNote(ctx,1047,0.15,0.45,0.3)}else if(type==='click'){playNote(ctx,600,0.08,0,0.08)}else if(type==='gameover'){playNote(ctx,392,0.15,0,0.3,'triangle');playNote(ctx,349,0.15,0.2,0.3,'triangle');playNote(ctx,311,0.2,0.4,0.4,'triangle')}}catch(e){}}
-function load(){try{const u=localStorage.getItem('mathUser2');if(u)user={...user,...JSON.parse(u)};const s=localStorage.getItem('mathSettings2');if(s)settings={...settings,...JSON.parse(s)};const p=localStorage.getItem('paymentRequests2');if(p)paymentRequests=JSON.parse(p)}catch(e){}if(!settings.darkMode){document.body.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️'}updateUI()}
-function save(){try{localStorage.setItem('mathUser2',JSON.stringify(user));localStorage.setItem('mathSettings2',JSON.stringify(settings));localStorage.setItem('paymentRequests2',JSON.stringify(paymentRequests))}catch(e){}}
-function toggleTheme(){settings.darkMode=!settings.darkMode;if(settings.darkMode){document.body.removeAttribute('data-theme');document.getElementById('themeBtn').textContent='🌙'}else{document.body.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️'}document.getElementById('darkToggle').classList.toggle('active',settings.darkMode);save();playSound('click')}
-function getRankByScore(score){for(let i=RANK_ORDER.length-1;i>=0;i--){if(score>=RANKS[RANK_ORDER[i]].min)return RANK_ORDER[i]}return'bronze'}
-function updateUI(){const r=RANKS[user.rank],ri=RANK_ORDER.indexOf(user.rank);document.getElementById('homeName').innerHTML=user.name+(user.isPremium?' <span class="premium-badge">PREMIUM</span>':'');document.getElementById('homeAvatar').textContent=user.avatar;document.getElementById('homeAvatar').className='profile-avatar '+user.rank;document.getElementById('homeRank').innerHTML=r.icon+' '+r.name.toUpperCase();document.getElementById('homeRank').className='profile-rank '+user.rank;document.getElementById('profileCard').className='profile-card '+user.rank;document.getElementById('premiumBanner').style.display=user.isPremium?'none':'block';document.getElementById('pendingNotice').style.display=user.pendingRequest?'block':'none';document.getElementById('totalScore').textContent=user.totalScore.toLocaleString();document.getElementById('gamesPlayed').textContent=user.gamesPlayed;const total=user.correct+user.wrong;document.getElementById('accuracy').textContent=total>0?Math.round(user.correct/total*100)+'%':'0%';if(ri<RANK_ORDER.length-1){document.getElementById('rankProgress').style.display='block';const next=RANK_ORDER[ri+1],nextR=RANKS[next];const currentMin=r.min,nextMin=nextR.min;const prog=Math.min(100,(user.totalScore-currentMin)/(nextMin-currentMin)*100);document.getElementById('nextRankName').textContent=nextR.name+' gacha';document.getElementById('progressText').textContent=user.totalScore.toLocaleString()+' / '+nextMin.toLocaleString();document.getElementById('progressFill').style.width=prog+'%';document.getElementById('progressFill').className='rank-progress-fill '+next}else{document.getElementById('rankProgress').style.display='none'}document.getElementById('streakDays').textContent=user.streak+' kun';document.getElementById('task1').classList.toggle('done',user.tasks.refs>=3);document.getElementById('task2').classList.toggle('done',user.tasks.games>=10);document.getElementById('task3').classList.toggle('done',user.tasks.bought);document.getElementById('shopBalance').textContent=user.totalScore.toLocaleString()+' ⭐';document.getElementById('totalRefs').textContent=user.referrals.length;document.getElementById('refEarnings').textContent=user.refEarnings;document.getElementById('refBonus').textContent='+'+r.refBonus;document.getElementById('soundToggle').classList.toggle('active',settings.sound);document.getElementById('vibrationToggle').classList.toggle('active',settings.vibration);document.getElementById('darkToggle').classList.toggle('active',settings.darkMode);renderRankUpgrades();renderLeaderboard();renderAdminRequests()}
-function renderRankUpgrades(){const c=document.getElementById('rankUpgrades'),ci=RANK_ORDER.indexOf(user.rank);c.innerHTML=RANK_ORDER.filter(r=>r!=='bronze').map(rankKey=>{const rk=RANKS[rankKey];const owned=RANK_ORDER.indexOf(user.rank)>=RANK_ORDER.indexOf(rankKey);return'<div class="rank-upgrade '+(owned?'owned':'')+'" onclick="'+(owned?'':"buyRankDirect('"+rankKey+"')")+'"><div class="left"><div class="rank-icon '+rankKey+'">'+rk.icon+'</div><div class="info"><div class="name">'+rk.name+'</div><div class="benefits">'+rk.mult+'x ball, '+rk.min.toLocaleString()+'-'+rk.max.toLocaleString()+' ball</div></div></div><button class="price-btn">'+(owned?'✓ Bor':rk.priceText)+'</button></div>'}).join('')}
-function renderLeaderboard(){document.getElementById('lbMyAvatar').textContent=user.avatar;document.getElementById('lbMyAvatar').className='avatar '+user.rank;document.getElementById('lbMyName').textContent=user.name;document.getElementById('lbMyScore').textContent=user.totalScore.toLocaleString()+' ball';document.getElementById('lbMyBadge').innerHTML=RANKS[user.rank].icon+' '+RANKS[user.rank].name;document.getElementById('lbMyBadge').className='badge '+user.rank;let allData=[...leaderboardData,{...user,score:user.totalScore}];allData.sort((a,b)=>b.score-a.score);document.getElementById('myPosition').textContent=allData.findIndex(p=>p.id===user.id)+1;let filtered=currentLbTab==='all'?leaderboardData:leaderboardData.filter(p=>p.rank===currentLbTab);const c=document.getElementById('lbList');if(filtered.length===0){c.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:30px">Bu darajada hali o\'yinchilar yo\'q</div>';return}c.innerHTML=filtered.map((p,i)=>{const posClass=i===0?'gold':i===1?'silver':i===2?'bronze-color':'';return'<div class="lb-item '+(i<3?'top-3':'')+'"><div class="left"><div class="pos '+posClass+'">'+(i<3?['🥇','🥈','🥉'][i]:'#'+(i+1))+'</div><div class="avatar" style="background:var(--'+p.rank+')">'+p.avatar+'</div><div class="info"><div class="name">'+p.name+(p.isPremium?' ⭐':'')+'</div><div class="rank-badge">'+RANKS[p.rank].icon+' '+RANKS[p.rank].name+'</div></div></div><div class="score">'+p.score.toLocaleString()+'</div></div>'}).join('')}
-function switchLbTab(tab,el){currentLbTab=tab;document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderLeaderboard();playSound('click')}
-function renderAdminRequests(){const c=document.getElementById('adminRequests'),pending=paymentRequests.filter(r=>r.status==='pending');if(pending.length===0){c.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:20px">Hozircha so\'rovlar yo\'q</div>';return}c.innerHTML=pending.map(r=>'<div class="admin-request"><div class="user-info"><div class="avatar" style="background:var(--'+(r.userRank||'bronze')+')">'+r.userAvatar+'</div><div class="details"><div class="name">'+r.userName+'</div><div class="product">'+r.product+'</div></div><div class="amount">'+r.amount+'</div></div>'+(r.screenshot?'<img class="screenshot" src="'+r.screenshot+'" onclick="previewImage(this.src)">':'')+'<div class="btns"><button class="btn approve" onclick="approvePayment(\''+r.id+'\')">✓ Tasdiqlash</button><button class="btn reject" onclick="rejectPayment(\''+r.id+'\')">✕ Rad etish</button></div></div>').join('')}
-function previewImage(src){document.getElementById('previewImage').src=src;openModal('image')}
-function approvePayment(id){const req=paymentRequests.find(r=>r.id===id);if(!req)return;req.status='approved';if(req.type==='premium'){user.isPremium=true;toast('🎉 Premium tasdiqlandi!','success');playSound('levelup')}else if(req.type==='rank'){user.rank=req.targetRank;toast('🎉 '+RANKS[req.targetRank].name+' tasdiqlandi!','success');playSound('levelup')}user.pendingRequest=null;save();updateUI()}
-function rejectPayment(id){const req=paymentRequests.find(r=>r.id===id);if(!req)return;req.status='rejected';user.pendingRequest=null;toast('❌ To\'lov rad etildi','error');save();updateUI();renderAdminRequests()}
-function showScreen(name){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById(name+'Screen').classList.add('active');const idx=['home','leaderboard','referral','shop'].indexOf(name);document.querySelectorAll('.nav-item')[idx].classList.add('active');playSound('click')}
-function openModal(name){if(name==='profile'){selAvatar=user.avatar;document.getElementById('nameInput').value=user.name;renderAvatarGrids()}document.getElementById(name+'Modal').classList.add('show');playSound('click')}
+let game={},selAvatar='🦊',currentLbTab='all';
+let leaderboardData=[];
+
+function load(){
+    try{
+        const u=localStorage.getItem('mathUser5');
+        if(u)user={...user,...JSON.parse(u)};
+        const s=localStorage.getItem('mathSettings5');
+        if(s)settings={...settings,...JSON.parse(s)};
+        const lb=localStorage.getItem('mathLb5');
+        if(lb)leaderboardData=JSON.parse(lb);
+    }catch(e){}
+    if(!settings.darkMode){
+        document.body.setAttribute('data-theme','light');
+        document.getElementById('themeBtn').textContent='☀️'
+    }
+    updateUI()
+}
+
+function save(){
+    try{
+        localStorage.setItem('mathUser5',JSON.stringify(user));
+        localStorage.setItem('mathSettings5',JSON.stringify(settings));
+        localStorage.setItem('mathLb5',JSON.stringify(leaderboardData))
+    }catch(e){}
+}
+
+function getRankByScore(score){
+    if(score>=30000)return 'pro';
+    if(score>=20000)return 'gold';
+    if(score>=10000)return 'silver';
+    return 'bronze'
+}
+
+function updateUI(){
+    const r=RANKS[user.rank]||RANKS.bronze;
+    const ri=RANK_ORDER.indexOf(user.rank);
+    
+    document.getElementById('homeName').innerHTML=user.name+(user.isPremium?' <span class="premium-badge">PREMIUM</span>':'');
+    document.getElementById('homeAvatar').textContent=user.avatar;
+    document.getElementById('homeAvatar').className='profile-avatar '+user.rank;
+    document.getElementById('homeRank').innerHTML=r.icon+' '+r.name.toUpperCase();
+    document.getElementById('homeRank').className='profile-rank '+user.rank;
+    document.getElementById('profileCard').className='profile-card '+user.rank;
+    document.getElementById('premiumBanner').style.display=user.isPremium?'none':'block';
+    document.getElementById('totalScore').textContent=user.totalScore.toLocaleString();
+    document.getElementById('gamesPlayed').textContent=user.gamesPlayed;
+    
+    const total=user.correct+user.wrong;
+    document.getElementById('accuracy').textContent=total>0?Math.round(user.correct/total*100)+'%':'0%';
+    
+    if(ri<RANK_ORDER.length-1){
+        document.getElementById('rankProgress').style.display='block';
+        const next=RANK_ORDER[ri+1];
+        const nextR=RANKS[next];
+        const prog=Math.min(100,(user.totalScore-r.min)/(nextR.min-r.min)*100);
+        document.getElementById('nextRankName').textContent=nextR.name+' gacha';
+        document.getElementById('progressText').textContent=user.totalScore.toLocaleString()+' / '+nextR.min.toLocaleString();
+        document.getElementById('progressFill').style.width=prog+'%';
+        document.getElementById('progressFill').className='rank-progress-fill '+next
+    }else{
+        document.getElementById('rankProgress').style.display='none'
+    }
+    
+    document.getElementById('streakDays').textContent=user.streak+' kun';
+    document.getElementById('task1').classList.toggle('done',user.tasks.refs>=3);
+    document.getElementById('task2').classList.toggle('done',user.tasks.games>=10);
+    document.getElementById('task3').classList.toggle('done',user.tasks.bought);
+    document.getElementById('shopBalance').textContent=user.totalScore.toLocaleString()+' ⭐';
+    document.getElementById('totalRefs').textContent=user.referrals.length;
+    document.getElementById('refEarnings').textContent=user.refEarnings;
+    document.getElementById('refBonus').textContent='+'+r.refBonus;
+    document.getElementById('refLink').value='t.me/VIBEX2BOT?start=ref'+user.id;
+    document.getElementById('soundToggle').classList.toggle('active',settings.sound);
+    document.getElementById('vibrationToggle').classList.toggle('active',settings.vibration);
+    document.getElementById('darkToggle').classList.toggle('active',settings.darkMode);
+    
+    renderRankUpgrades();
+    renderLeaderboard();
+    save()
+}
+
+function renderRankUpgrades(){
+    const c=document.getElementById('rankUpgrades');
+    c.innerHTML=RANK_ORDER.filter(r=>r!=='bronze').map(rankKey=>{
+        const rk=RANKS[rankKey];
+        const owned=RANK_ORDER.indexOf(user.rank)>=RANK_ORDER.indexOf(rankKey);
+        return `<div class="rank-upgrade ${owned?'owned':''}" onclick="${owned?'':"buyRank('"+rankKey+"')"}">
+            <div class="left">
+                <div class="rank-icon ${rankKey}">${rk.icon}</div>
+                <div class="info">
+                    <div class="name">${rk.name}</div>
+                    <div class="benefits">${rk.mult}x ball, ${rk.min.toLocaleString()}-${rk.max.toLocaleString()} ball</div>
+                </div>
+            </div>
+            <button class="price-btn">${owned?'✓ Bor':rk.price.toLocaleString()+" so'm"}</button>
+        </div>`
+    }).join('')
+}
+
+function renderLeaderboard(){
+    document.getElementById('lbMyAvatar').textContent=user.avatar;
+    document.getElementById('lbMyAvatar').className='avatar '+user.rank;
+    document.getElementById('lbMyName').textContent=user.name;
+    document.getElementById('lbMyScore').textContent=user.totalScore.toLocaleString()+' ball';
+    document.getElementById('lbMyBadge').innerHTML=(RANKS[user.rank]||RANKS.bronze).icon+' '+(RANKS[user.rank]||RANKS.bronze).name;
+    document.getElementById('lbMyBadge').className='badge '+user.rank;
+    
+    let allData=[...leaderboardData];
+    if(user.gamesPlayed>0){
+        const idx=allData.findIndex(p=>p.id===user.id);
+        const me={id:user.id,name:user.name,avatar:user.avatar,rank:user.rank,score:user.totalScore,isPremium:user.isPremium};
+        if(idx>=0)allData[idx]=me;else allData.push(me)
+    }
+    allData.sort((a,b)=>b.score-a.score);
+    
+    const myPos=allData.findIndex(p=>p.id===user.id)+1;
+    document.getElementById('myPosition').textContent=myPos||'-';
+    document.getElementById('myRankCard').style.display=user.gamesPlayed>0?'flex':'none';
+    
+    let filtered=currentLbTab==='all'?allData:allData.filter(p=>p.rank===currentLbTab);
+    const c=document.getElementById('lbList');
+    
+    if(filtered.length===0){
+        c.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:30px">Hali o\'yinchilar yo\'q</div>';
+        return
+    }
+    
+    c.innerHTML=filtered.slice(0,50).map((p,i)=>{
+        const posClass=i===0?'gold':i===1?'silver':i===2?'bronze-color':'';
+        const pRank=p.rank||'bronze';
+        const rInfo=RANKS[pRank]||RANKS.bronze;
+        return `<div class="lb-item ${i<3?'top-3':''}">
+            <div class="left">
+                <div class="pos ${posClass}">${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}</div>
+                <div class="avatar" style="background:var(--${pRank})">${p.avatar||'🦊'}</div>
+                <div class="info">
+                    <div class="name">${p.name}${p.isPremium?' ⭐':''}</div>
+                    <div class="rank-badge">${rInfo.icon} ${rInfo.name}</div>
+                </div>
+            </div>
+            <div class="score">${(p.score||0).toLocaleString()}</div>
+        </div>`
+    }).join('')
+}
+
+function switchLbTab(tab,el){
+    currentLbTab=tab;
+    document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    renderLeaderboard()
+}
+
+function showScreen(name){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.getElementById(name+'Screen').classList.add('active');
+    const idx=['home','leaderboard','referral','shop'].indexOf(name);
+    document.querySelectorAll('.nav-item')[idx].classList.add('active')
+}
+
+function openModal(name){
+    if(name==='profile'){
+        selAvatar=user.avatar;
+        document.getElementById('nameInput').value=user.name;
+        renderAvatarGrids()
+    }
+    document.getElementById(name+'Modal').classList.add('show')
+}
+
 function closeModal(name){document.getElementById(name+'Modal').classList.remove('show')}
-function renderAvatarGrids(){document.getElementById('avatarGrid').innerHTML=AVATARS.map(a=>'<div class="avatar-opt '+(a===selAvatar?'selected':'')+'" onclick="selectAvatar(\''+a+'\')">'+a+'</div>').join('');document.getElementById('premiumAvatarGrid').innerHTML=PREMIUM_AVATARS.map(a=>{const locked=!user.isPremium;return'<div class="avatar-opt premium-avatar '+(a===selAvatar?'selected':'')+' '+(locked?'locked':'')+'" onclick="'+(locked?'toast(\'Premium obuna kerak!\',\'error\')':'selectAvatar(\''+a+'\')')+'">'+a+'</div>'}).join('')}
-function selectAvatar(a){selAvatar=a;renderAvatarGrids();playSound('click')}
-function saveProfile(){user.name=document.getElementById('nameInput').value.trim()||"O'yinchi";user.avatar=selAvatar;save();updateUI();closeModal('profile');toast('Profil saqlandi!','success');playSound('correct')}
-function toggleSetting(key){settings[key]=!settings[key];document.getElementById(key+'Toggle').classList.toggle('active',settings[key]);save();playSound('click')}
-function buyItem(type,price){if(user.totalScore<price){toast('Ball yetarli emas!','error');playSound('wrong');return}user.totalScore-=price;user.tasks.bought=true;if(type==='life'){user.lives=Math.min(5,user.lives+1);toast('+1 jon!','success')}else if(type==='time5'){user.extraTime+=5;toast('+5 sek!','success')}playSound('correct');save();updateUI()}
-function buyRankDirect(rankKey){if(user.pendingRequest){toast('Sizda kutilayotgan so\'rov bor!','error');return}const rk=RANKS[rankKey];pendingPay={type:'rank',to:rankKey,price:rk.price};document.getElementById('payAmount').textContent=rk.priceText;document.getElementById('payProduct').textContent=rk.name+' darajasi';resetUpload();openModal('payment')}
-function buyPremium(){if(user.pendingRequest){toast('Sizda kutilayotgan so\'rov bor!','error');return}pendingPay={type:'premium',price:5000};document.getElementById('payAmount').textContent="5,000 so'm";document.getElementById('payProduct').textContent='Premium Obuna';resetUpload();closeModal('premium');openModal('payment')}
-function resetUpload(){document.getElementById('uploadText').textContent='To\'lov chekini kiriting';document.getElementById('uploadArea').classList.remove('has-file');document.getElementById('submitBtn').disabled=true;document.getElementById('receiptInput').value='';uploadedFile=null}
-function copyCard(){navigator.clipboard.writeText('9860080159543810');toast('Karta nusxalandi!','success');playSound('click')}
-function copyRefLink(){navigator.clipboard.writeText(document.getElementById('refLink').value);toast('Havola nusxalandi!','success');playSound('click')}
-function handleUpload(e){if(e.target.files[0]){uploadedFile=e.target.files[0];document.getElementById('uploadText').textContent=uploadedFile.name;document.getElementById('uploadArea').classList.add('has-file');document.getElementById('submitBtn').disabled=false;const reader=new FileReader();reader.onload=function(ev){uploadedFile.base64=ev.target.result};reader.readAsDataURL(uploadedFile);playSound('click')}}
-function submitPayment(){if(!pendingPay||!uploadedFile)return;const request={id:'req_'+Date.now(),type:pendingPay.type,userId:user.id,userName:user.name,userAvatar:user.avatar,userRank:user.rank,amount:document.getElementById('payAmount').textContent,product:document.getElementById('payProduct').textContent,screenshot:uploadedFile.base64,targetRank:pendingPay.to,status:'pending',date:new Date().toISOString()};paymentRequests.push(request);user.pendingRequest=request.id;save();toast("📤 Adminga jo'natildi!",'success');playSound('correct');closeModal('payment');pendingPay=null;uploadedFile=null;updateUI()}
-function startGame(){const baseLives=user.isPremium?5:user.lives;game={score:0,correct:0,wrong:0,streak:0,timeLeft:60+user.extraTime,lives:Math.min(5,baseLives),maxLives:Math.min(5,baseLives),multiplier:(user.isPremium?2:1)*RANKS[user.rank].mult,timer:null,answer:0,playing:true,paused:false};document.getElementById('bottomNav').style.display='none';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('gameContainer').classList.add('active');document.getElementById('gameAvatar').textContent=user.avatar;document.getElementById('gameAvatar').style.background='var(--'+user.rank+')';document.getElementById('gameName').textContent=user.name;updateGameUI();renderLives();nextQuestion();startTimer();playSound('click')}
-function updateGameUI(){document.getElementById('timerDisplay').textContent=game.paused?'⏸️':game.timeLeft;document.getElementById('gameScore').textContent=Math.round(game.score);document.getElementById('gameStreak').textContent=game.streak;document.getElementById('gameCorrect').textContent=game.correct;const t=document.getElementById('gameTimer');t.classList.remove('warning','critical','paused');if(game.paused)t.classList.add('paused');else if(game.timeLeft<=5)t.classList.add('critical');else if(game.timeLeft<=15)t.classList.add('warning')}
-function renderLives(){let html='';for(let i=0;i<game.maxLives;i++){html+='<span class="life '+(i>=game.lives?'lost':'')+'">❤️</span>'}document.getElementById('livesDisplay').innerHTML=html}
-function startTimer(){clearInterval(game.timer);game.timer=setInterval(()=>{if(game.paused)return;game.timeLeft--;updateGameUI();if(game.timeLeft<=10&&game.timeLeft>0)playSound('tick');if(game.timeLeft<=0)endGame()},1000)}
-function togglePause(){game.paused=!game.paused;document.getElementById('pauseOverlay').classList.toggle('show',game.paused);updateGameUI();playSound('click')}
-function quitFromPause(){game.paused=false;document.getElementById('pauseOverlay').classList.remove('show');exitGame()}
+
+function renderAvatarGrids(){
+    document.getElementById('avatarGrid').innerHTML=AVATARS.map(a=>
+        `<div class="avatar-opt ${a===selAvatar?'selected':''}" onclick="selectAvatar('${a}')">${a}</div>`
+    ).join('');
+    document.getElementById('premiumAvatarGrid').innerHTML=PREMIUM_AVATARS.map(a=>{
+        const locked=!user.isPremium;
+        return `<div class="avatar-opt premium-avatar ${a===selAvatar?'selected':''} ${locked?'locked':''}" 
+            onclick="${locked?"toast('Premium obuna kerak!','error')":"selectAvatar('"+a+"')"}">${a}</div>`
+    }).join('')
+}
+
+function selectAvatar(a){selAvatar=a;renderAvatarGrids()}
+
+function saveProfile(){
+    user.name=document.getElementById('nameInput').value.trim()||"O'yinchi";
+    user.avatar=selAvatar;
+    save();updateUI();closeModal('profile');
+    toast('Profil saqlandi!','success')
+}
+
+function toggleTheme(){
+    settings.darkMode=!settings.darkMode;
+    if(settings.darkMode){
+        document.body.removeAttribute('data-theme');
+        document.getElementById('themeBtn').textContent='🌙'
+    }else{
+        document.body.setAttribute('data-theme','light');
+        document.getElementById('themeBtn').textContent='☀️'
+    }
+    document.getElementById('darkToggle').classList.toggle('active',settings.darkMode);
+    save()
+}
+
+function toggleSetting(key){
+    settings[key]=!settings[key];
+    document.getElementById(key+'Toggle').classList.toggle('active',settings[key]);
+    save()
+}
+
+function buyItem(type,price){
+    if(user.totalScore<price){toast('Ball yetarli emas!','error');return}
+    user.totalScore-=price;
+    user.tasks.bought=true;
+    if(type==='life'){user.lives=Math.min(5,user.lives+1);toast('+1 jon!','success')}
+    else if(type==='time5'){user.extraTime+=5;toast('+5 sek!','success')}
+    save();updateUI()
+}
+
+function buyRank(rankKey){
+    if(tg){
+        tg.sendData(JSON.stringify({action:'buy_rank',rank:rankKey,price:RANKS[rankKey].price}))
+    }
+    toast('Bot orqali to\'lov qiling!','success')
+}
+
+function buyPremium(){
+    if(tg){
+        tg.sendData(JSON.stringify({action:'buy_premium',price:5000}))
+    }
+    toast('Bot orqali to\'lov qiling!','success')
+}
+
+function copyRefLink(){
+    navigator.clipboard.writeText(document.getElementById('refLink').value);
+    toast('Havola nusxalandi!','success')
+}
+
+function startGame(){
+    const baseLives=user.isPremium?5:Math.max(3,user.lives);
+    game={
+        score:0,correct:0,wrong:0,streak:0,
+        timeLeft:60+user.extraTime,
+        lives:Math.min(5,baseLives),
+        maxLives:Math.min(5,baseLives),
+        multiplier:(user.isPremium?2:1)*(RANKS[user.rank]?.mult||1),
+        timer:null,answer:0,playing:true,paused:false
+    };
+    document.getElementById('bottomNav').style.display='none';
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('gameContainer').classList.add('active');
+    document.getElementById('gameAvatar').textContent=user.avatar;
+    document.getElementById('gameAvatar').style.background='var(--'+user.rank+')';
+    document.getElementById('gameName').textContent=user.name;
+    updateGameUI();renderLives();nextQuestion();startTimer()
+}
+
+function updateGameUI(){
+    document.getElementById('timerDisplay').textContent=game.paused?'⏸️':game.timeLeft;
+    document.getElementById('gameScore').textContent=Math.round(game.score);
+    document.getElementById('gameStreak').textContent=game.streak;
+    document.getElementById('gameCorrect').textContent=game.correct;
+    const t=document.getElementById('gameTimer');
+    t.classList.remove('warning','critical','paused');
+    if(game.paused)t.classList.add('paused');
+    else if(game.timeLeft<=5)t.classList.add('critical');
+    else if(game.timeLeft<=15)t.classList.add('warning')
+}
+
+function renderLives(){
+    let html='';
+    for(let i=0;i<game.maxLives;i++){
+        html+='<span class="life '+(i>=game.lives?'lost':'')+'">❤️</span>'
+    }
+    document.getElementById('livesDisplay').innerHTML=html
+}
+
+function startTimer(){
+    clearInterval(game.timer);
+    game.timer=setInterval(()=>{
+        if(game.paused)return;
+        game.timeLeft--;
+        updateGameUI();
+        if(game.timeLeft<=0)endGame()
+    },1000)
+}
+
+function togglePause(){
+    game.paused=!game.paused;
+    document.getElementById('pauseOverlay').classList.toggle('show',game.paused);
+    updateGameUI()
+}
+
+function quitFromPause(){
+    game.paused=false;
+    document.getElementById('pauseOverlay').classList.remove('show');
+    exitGame()
+}
+
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-function nextQuestion(){const lvl=Math.min(2,Math.floor(game.correct/5));let n1,n2,op,ans;if(lvl===0){n1=rand(1,15);n2=rand(1,15);op=['+','-'][rand(0,1)]}else if(lvl===1){n1=rand(10,50);n2=rand(5,30);op=['+','-','×'][rand(0,2)]}else{n1=rand(20,100);n2=rand(10,50);op=['+','-','×','÷'][rand(0,3)]}if(op==='-'&&n2>n1)[n1,n2]=[n2,n1];if(op==='÷'){const f=rand(2,10);n2=rand(2,12);n1=n2*f}switch(op){case'+':ans=n1+n2;break;case'-':ans=n1-n2;break;case'×':ans=n1*n2;break;case'÷':ans=n1/n2;break}game.answer=Math.round(ans);document.getElementById('questionText').textContent=n1+' '+op+' '+n2+' = ?';const opts=[game.answer];while(opts.length<4){const d=rand(1,Math.max(5,Math.round(Math.abs(game.answer)*0.2)));const o=game.answer+(Math.random()<0.5?d:-d);if(!opts.includes(o)&&o>=0)opts.push(o)}opts.sort(()=>Math.random()-0.5);document.getElementById('answersGrid').innerHTML=opts.map(o=>'<button class="answer-btn" onclick="checkAnswer('+o+',this)">'+o+'</button>').join('')}
-function checkAnswer(sel,btn){if(!game.playing||game.paused)return;const btns=document.querySelectorAll('.answer-btn');btns.forEach(b=>b.disabled=true);if(sel===game.answer){btn.classList.add('correct');playSound('correct');game.correct++;game.streak++;let pts=10*game.multiplier;if(game.streak>=3)pts+=5;if(game.streak>=5)pts+=10;game.score+=Math.round(pts);if(game.streak%3===0)game.timeLeft+=2;updateGameUI();setTimeout(()=>{if(game.playing)nextQuestion()},400)}else{btn.classList.add('wrong');playSound('wrong');if(settings.vibration&&navigator.vibrate)navigator.vibrate(100);game.wrong++;game.streak=0;game.lives--;renderLives();btns.forEach(b=>{if(parseInt(b.textContent)===game.answer)b.classList.add('correct')});if(game.lives<=0)setTimeout(()=>endGame(),800);else setTimeout(()=>{if(game.playing)nextQuestion()},800)}}
-function endGame(){game.playing=false;clearInterval(game.timer);const final=Math.round(game.score);user.totalScore+=final;user.gamesPlayed++;user.correct+=game.correct;user.wrong+=game.wrong;user.tasks.games++;playSound('gameover');const newRank=getRankByScore(user.totalScore);if(RANK_ORDER.indexOf(newRank)>RANK_ORDER.indexOf(user.rank)){user.rank=newRank;setTimeout(()=>{toast('🎉 '+RANKS[user.rank].name+' darajasi!','success');playSound('levelup')},500)}save();document.getElementById('gameContainer').classList.remove('active');document.getElementById('resultContainer').classList.add('active');document.getElementById('resultScore').textContent=final;document.getElementById('resultCorrect').textContent=game.correct;document.getElementById('resultWrong').textContent=game.wrong;const t=game.correct+game.wrong;document.getElementById('resultAccuracy').textContent=t>0?Math.round(game.correct/t*100)+'%':'0%'}
-function restartGame(){document.getElementById('resultContainer').classList.remove('active');startGame()}
-function backToMenu(){document.getElementById('resultContainer').classList.remove('active');document.getElementById('bottomNav').style.display='flex';document.getElementById('homeScreen').classList.add('active');updateUI()}
-function exitGame(){if(confirm("O'yindan chiqasizmi?")){game.playing=false;clearInterval(game.timer);document.getElementById('gameContainer').classList.remove('active');document.getElementById('bottomNav').style.display='flex';document.getElementById('homeScreen').classList.add('active')}}
-function toast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.classList.remove('show'),2500)}
+
+function nextQuestion(){
+    const lvl=Math.min(3,Math.floor(game.correct/4));
+    let n1,n2,op,ans;
+    
+    if(lvl===0){
+        n1=rand(2,20);n2=rand(2,15);
+        op=['+','-'][rand(0,1)]
+    }else if(lvl===1){
+        n1=rand(10,50);n2=rand(5,30);
+        op=['+','-','×'][rand(0,2)]
+    }else if(lvl===2){
+        n1=rand(20,80);n2=rand(10,50);
+        op=['+','-','×','÷'][rand(0,3)]
+    }else{
+        n1=rand(50,150);n2=rand(20,80);
+        op=['+','-','×','÷'][rand(0,3)]
+    }
+    
+    if(op==='-'&&n2>n1)[n1,n2]=[n2,n1];
+    if(op==='÷'){const f=rand(2,12);n2=rand(2,12);n1=n2*f}
+    
+    switch(op){
+        case'+':ans=n1+n2;break;
+        case'-':ans=n1-n2;break;
+        case'×':ans=n1*n2;break;
+        case'÷':ans=Math.round(n1/n2);break
+    }
+    
+    game.answer=ans;
+    document.getElementById('questionText').textContent=n1+' '+op+' '+n2+' = ?';
+    
+    const opts=[game.answer];
+    while(opts.length<4){
+        const d=rand(1,Math.max(5,Math.round(Math.abs(game.answer)*0.15)));
+        const o=game.answer+(Math.random()<0.5?d:-d);
+        if(!opts.includes(o)&&o>=0)opts.push(o)
+    }
+    opts.sort(()=>Math.random()-0.5);
+    document.getElementById('answersGrid').innerHTML=opts.map(o=>
+        `<button class="answer-btn" onclick="checkAnswer(${o},this)">${o}</button>`
+    ).join('')
+}
+
+function checkAnswer(sel,btn){
+    if(!game.playing||game.paused)return;
+    const btns=document.querySelectorAll('.answer-btn');
+    btns.forEach(b=>b.disabled=true);
+    
+    if(sel===game.answer){
+        btn.classList.add('correct');
+        game.correct++;game.streak++;
+        let pts=10*game.multiplier;
+        if(game.streak>=3)pts+=5;
+        if(game.streak>=5)pts+=10;
+        game.score+=Math.round(pts);
+        if(game.streak%3===0)game.timeLeft+=2;
+        updateGameUI();
+        setTimeout(()=>{if(game.playing)nextQuestion()},400)
+    }else{
+        btn.classList.add('wrong');
+        if(settings.vibration&&navigator.vibrate)navigator.vibrate(100);
+        game.wrong++;game.streak=0;game.lives--;
+        renderLives();
+        btns.forEach(b=>{if(parseInt(b.textContent)===game.answer)b.classList.add('correct')});
+        if(game.lives<=0)setTimeout(()=>endGame(),800);
+        else setTimeout(()=>{if(game.playing)nextQuestion()},800)
+    }
+}
+
+function endGame(){
+    game.playing=false;
+    clearInterval(game.timer);
+    const final=Math.round(game.score);
+    user.totalScore+=final;
+    user.gamesPlayed++;
+    user.correct+=game.correct;
+    user.wrong+=game.wrong;
+    user.tasks.games++;
+    
+    const newRank=getRankByScore(user.totalScore);
+    if(RANK_ORDER.indexOf(newRank)>RANK_ORDER.indexOf(user.rank)){
+        user.rank=newRank;
+        setTimeout(()=>toast('🎉 '+RANKS[user.rank].name+' darajasi!','success'),500)
+    }
+    
+    save();
+    
+    if(tg){
+        tg.sendData(JSON.stringify({
+            action:'game_end',
+            score:final,
+            correct:game.correct,
+            wrong:game.wrong
+        }))
+    }
+    
+    document.getElementById('gameContainer').classList.remove('active');
+    document.getElementById('resultContainer').classList.add('active');
+    document.getElementById('resultScore').textContent=final;
+    document.getElementById('resultCorrect').textContent=game.correct;
+    document.getElementById('resultWrong').textContent=game.wrong;
+    const t=game.correct+game.wrong;
+    document.getElementById('resultAccuracy').textContent=t>0?Math.round(game.correct/t*100)+'%':'0%';
+    updateUI()
+}
+
+function restartGame(){
+    document.getElementById('resultContainer').classList.remove('active');
+    startGame()
+}
+
+function backToMenu(){
+    document.getElementById('resultContainer').classList.remove('active');
+    document.getElementById('bottomNav').style.display='flex';
+    document.getElementById('homeScreen').classList.add('active');
+    updateUI()
+}
+
+function exitGame(){
+    if(confirm("O'yindan chiqasizmi?")){
+        game.playing=false;
+        clearInterval(game.timer);
+        document.getElementById('gameContainer').classList.remove('active');
+        document.getElementById('bottomNav').style.display='flex';
+        document.getElementById('homeScreen').classList.add('active')
+    }
+}
+
+function toast(msg,type=''){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.className='toast '+type+' show';
+    setTimeout(()=>t.classList.remove('show'),2500)
+}
+
 load();
-document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')})});
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+    m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')})
+});
 </script>
 </body>
 </html>
