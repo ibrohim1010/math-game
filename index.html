@@ -11,7 +11,7 @@
         body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
         .app{max-width:400px;margin:0 auto;padding:16px 16px 100px}
         .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-        .logo{font-size:24px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .logo{font-size:24px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
         .stats{display:flex;gap:12px}
         .stat{background:var(--card);padding:8px 14px;border-radius:20px;font-size:14px;font-weight:600}
         .rank-box{background:var(--card);border-radius:16px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
@@ -65,7 +65,7 @@
         @keyframes ptsAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}20%{opacity:1;transform:translate(-50%,-70%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-120%)}}
         .final{text-align:center;padding:20px 0}
         .final h2{font-size:28px;margin-bottom:8px}
-        .final-score{font-size:56px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:16px 0}
+        .final-score{font-size:56px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin:16px 0}
         .final-stats{display:flex;gap:10px;margin-bottom:20px}
         .final-stat{flex:1;background:var(--bg);padding:14px;border-radius:12px;text-align:center}
         .shop-section{margin-bottom:24px}
@@ -255,41 +255,32 @@ let timer=null;
 function load(){
     const s=localStorage.getItem('vx5');
     if(s)U={...U,...JSON.parse(s)};
-    loadFromCloud();
+    
+    // URL dan bot ma'lumotlarini olish
+    const urlParams = new URLSearchParams(window.location.search);
+    const startParam = urlParams.get('start_param');
+    if(startParam){
+        try{
+            // Format: pts_rank_prem (masalan: 150_bronze_0)
+            const parts = startParam.split('_');
+            if(parts.length >= 3){
+                const botPts = parseInt(parts[0]) || 0;
+                const botRank = parts[1] || 'bronze';
+                const botPrem = parts[2] === '1';
+                
+                // Eng katta ballni olish
+                if(botPts > U.pts){
+                    U.pts = botPts;
+                    U.rank = botRank;
+                    U.prem = botPrem || U.prem;
+                    localStorage.setItem('vx5',JSON.stringify(U));
+                }
+            }
+        }catch(e){}
+    }
 }
 function save(){
     localStorage.setItem('vx5',JSON.stringify(U));
-    saveToCloud();
-}
-
-// Telegram CloudStorage bilan sinxronlash
-function loadFromCloud(){
-    if(tg && tg.CloudStorage){
-        tg.CloudStorage.getItem('userData',(err,val)=>{
-            if(!err && val){
-                try{
-                    const d=JSON.parse(val);
-                    // Botdan kelgan ball kattaroq bo'lsa yangilash
-                    if(d.pts > U.pts){
-                        U.pts = d.pts;
-                        U.prem = d.prem || U.prem;
-                        U.rank = d.rank || U.rank;
-                        if(d.own_silver) U.own_silver=true;
-                        if(d.own_gold) U.own_gold=true;
-                        if(d.own_platinum) U.own_platinum=true;
-                        if(d.own_diamond) U.own_diamond=true;
-                        localStorage.setItem('vx5',JSON.stringify(U));
-                        updateUI();renderRanks();
-                    }
-                }catch(e){}
-            }
-        });
-    }
-}
-function saveToCloud(){
-    if(tg && tg.CloudStorage){
-        tg.CloudStorage.setItem('userData',JSON.stringify({pts:U.pts,rank:U.rank,prem:U.prem,own_silver:U.own_silver,own_gold:U.own_gold,own_platinum:U.own_platinum,own_diamond:U.own_diamond}));
-    }
 }
 function fmt(n){return n.toLocaleString('uz-UZ')}
 function fmtPrice(n){return fmt(n)+" so'm"}
