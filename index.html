@@ -252,8 +252,45 @@ let U={pts:0,games:0,best:0,streak:0,lastDay:null,prem:false,rank:'bronze',buyLi
 let G={score:0,correct:0,lives:3,maxLives:3,time:60,maxTime:60,playing:false,streak:0,bestStreak:0,answer:0,opts:[],diff:'easy',canAns:true};
 let timer=null;
 
-function load(){const s=localStorage.getItem('vx5');if(s)U={...U,...JSON.parse(s)}}
-function save(){localStorage.setItem('vx5',JSON.stringify(U))}
+function load(){
+    const s=localStorage.getItem('vx5');
+    if(s)U={...U,...JSON.parse(s)};
+    loadFromCloud();
+}
+function save(){
+    localStorage.setItem('vx5',JSON.stringify(U));
+    saveToCloud();
+}
+
+// Telegram CloudStorage bilan sinxronlash
+function loadFromCloud(){
+    if(tg && tg.CloudStorage){
+        tg.CloudStorage.getItem('userData',(err,val)=>{
+            if(!err && val){
+                try{
+                    const d=JSON.parse(val);
+                    // Botdan kelgan ball kattaroq bo'lsa yangilash
+                    if(d.pts > U.pts){
+                        U.pts = d.pts;
+                        U.prem = d.prem || U.prem;
+                        U.rank = d.rank || U.rank;
+                        if(d.own_silver) U.own_silver=true;
+                        if(d.own_gold) U.own_gold=true;
+                        if(d.own_platinum) U.own_platinum=true;
+                        if(d.own_diamond) U.own_diamond=true;
+                        localStorage.setItem('vx5',JSON.stringify(U));
+                        updateUI();renderRanks();
+                    }
+                }catch(e){}
+            }
+        });
+    }
+}
+function saveToCloud(){
+    if(tg && tg.CloudStorage){
+        tg.CloudStorage.setItem('userData',JSON.stringify({pts:U.pts,rank:U.rank,prem:U.prem,own_silver:U.own_silver,own_gold:U.own_gold,own_platinum:U.own_platinum,own_diamond:U.own_diamond}));
+    }
+}
 function fmt(n){return n.toLocaleString('uz-UZ')}
 function fmtPrice(n){return fmt(n)+" so'm"}
 
@@ -375,9 +412,16 @@ function endGame(){
     clearInterval(timer);G.playing=false;
     const t=new Date().toDateString();if(U.lastDay!==t){const y=new Date();y.setDate(y.getDate()-1);if(U.lastDay===y.toDateString())U.streak++;else U.streak=1;U.lastDay=t}
     U.pts+=G.score;U.games++;U.daily.games++;if(G.score>U.best)U.best=G.score;autoRank();save();
+    syncToBot();
     document.getElementById('inGame').style.display='none';document.getElementById('endGame').style.display='block';
     document.getElementById('fScore').textContent='+'+G.score;document.getElementById('fCorrect').textContent=G.correct;document.getElementById('fStreak').textContent=G.bestStreak;document.getElementById('fTotal').textContent=fmt(U.pts);
     updateUI();renderRanks();
+}
+
+function syncToBot(){
+    if(tg&&tg.sendData){
+        try{tg.sendData(JSON.stringify({action:'sync_score',pts:U.pts,rank:U.rank,games:U.games,best:U.best}))}catch(e){}
+    }
 }
 
 function autoRank(){for(let i=RANKS.length-1;i>=0;i--){const r=RANKS[i];if(U.pts>=r.min&&(r.price===0||U['own_'+r.id])){U.rank=r.id;break}}}
